@@ -1,0 +1,90 @@
+<%- if node[:nginx][:custom_block_referer].any? %>
+map $http_referer $bad_referer {
+    default 0;
+    <% node[:nginx][:custom_block_referer].each do |referer| %>
+    "~<%= referer %>" 1;
+    <% end %>
+}
+<%- end %>
+
+server {
+    listen   80;
+<% if node[:app][:default_server_name].empty? %>
+    server_name  .<%= node[:app][:host] %>;
+<% else %>
+    server_name  <%= node[:app][:default_server_name] %>;
+<% end %>
+    access_log  <%= node[:nginx][:log_dir] %>/<%= node[:app][:host] %>.access.log;
+
+    proxy_set_header Host $host;
+    real_ip_header X-Forwarded-For;
+    set_real_ip_from 10.0.0.0/8;
+
+<% node[:nginx][:custom_block_ips].each do |ip| %>
+    deny <%= ip %>;
+<% end %>
+
+    location /static/ {
+        alias <%= "#{node[:app][:directory]}/#{node[:app][:host]}/#{node[:app][:name]}/static/" %>;
+        autoindex off;
+    }
+
+    location ~ /uploadimage/ {
+        client_max_body_size 15M;
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    location /users/profile_edit/ {
+        client_max_body_size 5M;
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+<% if node[:nginx][:basic_auth_entries].length > 0 %>
+    location /external-link/ {
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    location /cookie-sync/ {
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    location / {
+        auth_basic "<%= node[:nginx][:basic_auth_realm] %>";
+        auth_basic_user_file <%= node[:nginx][:basic_auth_file] %>;
+        proxy_pass http://127.0.0.1:8000;
+    }
+<% else %>
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+    }
+<% end %>
+
+    # Block all svn access
+    if ($request_uri ~* ^.*\.svn.*$) {
+        return 404;
+    }
+
+    # Block all git access
+    if ($request_uri ~* ^.*\.git.*$) {
+        return 404;
+    }
+
+    location /nginx_status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        deny all;
+    }
+
+<%- if node[:nginx][:custom_block_referer].any? %>
+    if ($bad_referer) {
+        return 444;
+    }
+<%- end %>
+}
+
+# block requests without valid domain.
+server {
+    listen 80 default_server;
+    return 404;
+}
