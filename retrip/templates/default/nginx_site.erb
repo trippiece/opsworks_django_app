@@ -24,6 +24,10 @@ server {
     deny <%= ip %>;
 <% end %>
 
+    location ~* \.(eot|ttf|woff|woff2)$ {
+        add_header Access-Control-Allow-Origin *;
+    }
+
     location /static/ {
         alias <%= "#{node[:app][:directory]}/#{node[:app][:host]}/#{node[:app][:name]}/static/" %>;
         autoindex off;
