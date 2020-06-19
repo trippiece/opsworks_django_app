@@ -13,7 +13,7 @@ bash 'install n and nodejs manually' do
   code <<-EOC
   npm config set strict-ssl false
   npm install -g n
-  n 5.12.0
+  n 6.0.0
   EOC
 end
 # remove packages no longer needed.
