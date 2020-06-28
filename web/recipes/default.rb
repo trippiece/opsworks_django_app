@@ -7,15 +7,8 @@ include_recipe 'common::virtualenv'
   end
 end
 
-# install newer nodejs
-# loosen ssl validation before the installation.
-bash 'install n and nodejs manually' do
-  code <<-EOC
-  npm config set strict-ssl false
-  npm install -g n
-  n 6.0.0
-  EOC
-end
+# install rbenv
+include_recipe 'common::rbenv'
 
 # install bundler
 bash 'gem install bundler' do
