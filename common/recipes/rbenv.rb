@@ -1,5 +1,5 @@
 git "/usr/local/rbenv" do
-  repository "https://github.com/sstephenson/rbenv.git"
+  repository "https://github.com/rbenv/rbenv.git"
   reference "master"
   user node[:app][:owner]
   group node[:app][:group]
