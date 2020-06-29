@@ -17,7 +17,7 @@ bash "pip install -r requirements_web.txt" do
   group node[:app][:group]
   code <<-EOC
   export HOME=~#{node[:app][:owner]}
-  #{node[:virtualenv][:path]}/bin/pip install -r requirements_web.txt
+  #{node[:virtualenv][:parent]}/python2/bin/pip install -r requirements_web.txt
   EOC
 end
 
@@ -68,7 +68,7 @@ bash "manage.py" do
   user node[:app][:owner]
   group node[:app][:group]
   code <<-EOC
-  #{node[:virtualenv][:path]}/bin/python manage.py collectstatic --noinput --settings=#{node[:app][:django_settings]}
+  #{node[:virtualenv][:parent]}/python2/bin/python manage.py collectstatic --noinput --settings=#{node[:app][:django_settings]}
   EOC
 end
 
