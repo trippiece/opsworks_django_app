@@ -7,6 +7,10 @@ include_recipe 'common::virtualenv'
   end
 end
 
+include_recipe 'common::postfix'
+
+include_recipe 'common::repository'
+
 # install rbenv
 include_recipe 'common::rbenv'
 
@@ -23,10 +27,6 @@ bash 'npm install -g grunt-cli' do
   npm install -g grunt-cli
   EOC
 end
-
-include_recipe 'common::postfix'
-
-include_recipe 'common::repository'
 
 app_directory = "#{node[:app][:directory]}/#{node[:app][:host]}"
 
