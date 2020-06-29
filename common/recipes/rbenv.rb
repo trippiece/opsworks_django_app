@@ -1,4 +1,7 @@
-git "/usr/local/rbenv" do
+app_directory = "#{node[:app][:directory]}/#{node[:app][:host]}"
+
+# deploy git repository.
+git app_directory do
   repository "https://github.com/rbenv/rbenv.git"
   reference "master"
   user node[:app][:owner]
@@ -6,21 +9,21 @@ git "/usr/local/rbenv" do
   action :checkout
 end
 
-directory "/usr/local/rbenv/shims" do
+directory "#{app_directory}/shims" do
   owner node[:app][:owner]
   group node[:app][:group]
   mode 00755
   action :create
 end
 
-directory "/usr/local/rbenv/versions" do
+directory "#{app_directory}/versions" do
   owner node[:app][:owner]
   group node[:app][:group]
   mode 00755
   action :create
 end
 
-directory "/usr/local/rbenv/plugins" do
+directory "#{app_directory}/plugins" do
   owner node[:app][:owner]
   group node[:app][:group]
   mode 00755
@@ -35,7 +38,7 @@ cookbook_file "/etc/profile.d/rbenv.sh" do
 end
 
 # ruby-buildインストール
-git "/usr/local/rbenv/plugins/ruby-build" do
+git "#{app_directory}/plugins/ruby-build" do
   repository "https://github.com/sstephenson/ruby-build.git"
   reference "master"
   user node[:app][:owner]
