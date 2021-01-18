@@ -8,6 +8,10 @@ map $http_referer $bad_referer {
 <%- end %>
 
 server {
+    if ($http_user_agent ~* (SemrushBot|AhrefsBot|Linguee|proximic|BLEXBot|GrapeshotCrawler|Mappy|MJ12bot|MegaIndex|bidswitchbot|SMTBot|ltx71|integralads|jet-bot|trendictionbot)) {
+        return 403;
+    }
+
     listen   80;
 <% if node[:app][:default_server_name].empty? %>
     server_name  .<%= node[:app][:host] %>;
