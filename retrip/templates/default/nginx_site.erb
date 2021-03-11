@@ -8,7 +8,7 @@ map $http_referer $bad_referer {
 <%- end %>
 
 server {
-    if ($http_user_agent ~* (admantx|comscore|dotbot|GoogleDocs|SemrushBot|AhrefsBot|Linguee|proximic|BLEXBot|GrapeshotCrawler|Mappy|MJ12bot|MegaIndex|bidswitchbot|SMTBot|ltx71|integralads|jet-bot|trendictionbot|PetalBot|Cincraw|Cocolyzebot)) {
+    if ($http_user_agent ~* (admantx|comscore|dotbot|GoogleDocs|SemrushBot|AhrefsBot|Linguee|proximic|BLEXBot|GrapeshotCrawler|Mappy|MJ12bot|MegaIndex|bidswitchbot|SMTBot|ltx71|integralads|jet-bot|trendictionbot|PetalBot|Cincraw|Cocolyzebot|CriteoBot)) {
         return 403;
     }
     if ($http_user_agent = "bot") {
