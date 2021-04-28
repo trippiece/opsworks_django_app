@@ -26,7 +26,7 @@ end
 # install grunt-cli
 bash 'npm install -g grunt-cli' do
   code <<-EOC
-  npm install -g grunt-cli
+  npm install -g grunt-cli@1.3.2
   EOC
 end
 
