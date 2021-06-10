@@ -15,7 +15,7 @@ bash 'uninstall gdal and re-install its newer version with conan' do
   sudo yum install gcc72 gcc72-c++
   sudo wget http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz
   sudo tar xvzf gdal-2.1.3.tar.gz
-  sudo cd gdal-2.1.3
+  cd gdal-2.1.3
   sudo ./configure
   sudo make
   sudo make install
