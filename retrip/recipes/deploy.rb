@@ -36,7 +36,7 @@ bash "pip install -r requirements.txt" do
   #{node[:virtualenv][:path]}/bin/pip uninstall bcrypt -y
   #{node[:virtualenv][:path]}/bin/pip uninstall py-bcrypt -y
   #{node[:virtualenv][:path]}/bin/pip install pycurl --global-option="--with-$PYCURL_SSL_LIBRARY"
-  #{node[:virtualenv][:path]}/bin/pip install -r requirements.txt
+  #{node[:virtualenv][:path]}/bin/pip install -r requirements.txt --no-deps
   #{node[:virtualenv][:path]}/bin/pip uninstall psycopg2
   EOC
 end
