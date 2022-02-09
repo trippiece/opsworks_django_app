@@ -7,6 +7,11 @@ end
 
 include_recipe "python::pip"
 
+python_pip "pip" do
+  version "20.3.4"
+  action :install
+end
+
 python_pip "virtualenv" do
   version "20.13.1"
   action :install
