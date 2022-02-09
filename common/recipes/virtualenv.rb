@@ -1,5 +1,5 @@
 # install python and other required packages.
-%w{python36 python36-devel}.each do |pkg|
+%w{python38 python38-devel}.each do |pkg|
   package pkg do
     action :upgrade
   end
@@ -8,7 +8,7 @@ end
 include_recipe "python::pip"
 
 python_pip "virtualenv" do
-  version "16.7.7"
+  version "21.3.1"
   action :install
 end
 
@@ -22,7 +22,7 @@ end
 python_virtualenv node[:virtualenv][:path] do
   owner node[:app][:owner]
   group node[:app][:group]
-  interpreter "python36"
+  interpreter "python38"
   action :create
 end
 
