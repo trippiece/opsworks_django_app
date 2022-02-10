@@ -1,5 +1,5 @@
 # install packages(gdal is only for installing its dependencies)
-%w{gdal proj-devel json-c postgresql11-devel}.each do |pkg|
+%w{gdal proj-devel json-c postgresql95-devel}.each do |pkg|
   package pkg do
     action :upgrade
   end
