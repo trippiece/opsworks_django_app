@@ -73,7 +73,7 @@ if `supervisorctl status gunicorn-#{node[:app][:name]} | awk '{print $2}'` =~ /^
   # reload it.
   bash "reload gunicorn" do
     code <<-EOC
-    supervisorctl status gunicorn-#{node[:app][:name]} | awk '{gsub(/,$/, "", $4); print $4}' | xargs kill -HUP
+    /usr/local/bin/supervisorctl status gunicorn-#{node[:app][:name]} | awk '{gsub(/,$/, "", $4); print $4}' | xargs kill -HUP
     EOC
   end
 else
@@ -88,7 +88,7 @@ if `supervisorctl status celeryd-#{node[:app][:name]} | awk '{print $2}'` =~ /^R
   # reload it.
   bash "reload celeryd" do
     code <<-EOC
-    supervisorctl status celeryd-#{node[:app][:name]} | awk '{gsub(/,$/, "", $4); print $4}' | xargs kill -HUP
+    /usr/local/bin/supervisorctl status celeryd-#{node[:app][:name]} | awk '{gsub(/,$/, "", $4); print $4}' | xargs kill -HUP
     EOC
   end
 else
