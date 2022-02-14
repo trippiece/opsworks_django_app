@@ -27,7 +27,7 @@ end
 # yum install
 bash 'yum install libGL' do
   code <<-EOC
-  sudo yum install -y mesa-libGL.x86_64
+  sudo yum install -y mesa-libGL.x86_64 mesa-libGL-devel.x86_64
   EOC
 end
 
