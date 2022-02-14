@@ -24,13 +24,6 @@ template "#{app_directory}/#{node[:app][:name]}/#{node[:app][:name]}/settings/#{
   action :create
 end
 
-# yum install
-bash 'yum install libGL' do
-  code <<-EOC
-  sudo yum install -y mesa-libGL.x86_64 mesa-libGL-devel.x86_64
-  EOC
-end
-
 # pip install
 bash "pip install -r requirements.txt" do
   cwd app_directory
