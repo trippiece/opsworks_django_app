@@ -7,15 +7,9 @@ end
 
 include_recipe "python::pip"
 
-# pip install
-bash "pip install -r requirements.txt" do
-  user node[:app][:owner]
-  group node[:app][:group]
-  code <<-EOC
-  export HOME=~#{node[:app][:owner]}
-  #{node[:virtualenv][:path]}/bin/pip install pip==20.3.4
-  #{node[:virtualenv][:path]}/bin/pip install pip==20.13.1
-  EOC
+python_pip "virtualenv" do
+  version "16.7.7"
+  action :install
 end
 
 directory node[:virtualenv][:parent] do

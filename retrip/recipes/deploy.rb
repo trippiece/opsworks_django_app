@@ -32,6 +32,7 @@ bash "pip install -r requirements.txt" do
   code <<-EOC
   export HOME=~#{node[:app][:owner]}
   export PYCURL_SSL_LIBRARY=`curl-config --ssl-backends 2>&1 | awk '{if ($0 == "OpenSSL") print "openssl"; else print "nss";exit;}'`
+  #{node[:virtualenv][:path]}/bin/pip install pip==20.3.4
   #{node[:virtualenv][:path]}/bin/pip uninstall linaro-django-pagination -y
   #{node[:virtualenv][:path]}/bin/pip uninstall bcrypt -y
   #{node[:virtualenv][:path]}/bin/pip uninstall py-bcrypt -y
