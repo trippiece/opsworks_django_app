@@ -9,7 +9,6 @@ include_recipe "python::pip"
 
 # pip install
 bash "pip install -r requirements.txt" do
-  cwd app_directory
   user node[:app][:owner]
   group node[:app][:group]
   code <<-EOC
