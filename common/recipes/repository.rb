@@ -38,6 +38,6 @@ bash "pip install -r requirements.txt" do
   code <<-EOC
   export HOME=~#{node[:app][:owner]}
   #{node[:virtualenv][:path]}/bin/pip install six setuptools
-  #{node[:virtualenv][:path]}/bin/pip install -r requirements.txt --no-deps
+  #{node[:virtualenv][:path]}/bin/pip install -r requirements.txt
   EOC
 end

@@ -76,6 +76,13 @@ s3_file "#{app_directory}/#{node[:apns][:key_path]}" do
   not_if { ::File.exists?("#{app_directory}/#{node[:apns][:key_path]}") }
 end
 
+# yum install
+bash 'yum install libGL' do
+  code <<-EOC
+  sudo yum install -y mesa-libGL.x86_64 mesa-libGL-devel.x86_64
+  EOC
+end
+
 # downloadcertificate
 bash "manage.py" do
   cwd "#{app_directory}/#{node[:app][:name]}"
