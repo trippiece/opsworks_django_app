@@ -54,7 +54,7 @@ end
 bash "grunt #{node[:app][:grunt_target]}" do
   cwd app_directory
   code <<-EOC
-  sudo grunt #{node[:app][:grunt_target]}
+  grunt #{node[:app][:grunt_target]} --force
   EOC
 end
 
