@@ -58,7 +58,7 @@ bash "grunt #{node[:app][:grunt_target]}" do
   user node[:app][:owner]
   group node[:app][:group]
   code <<-EOC
-  sudo grunt #{node[:app][:grunt_target]} --force
+  grunt #{node[:app][:grunt_target]} --force
   EOC
 end
 
