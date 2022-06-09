@@ -45,6 +45,8 @@ end
 # install compilers of less and coffeescript.
 bash 'npm install --production' do
   cwd app_directory
+  user node[:app][:owner]
+  group node[:app][:group]
   code <<-EOC
   npm install --production
   EOC
@@ -53,6 +55,8 @@ end
 # grunt deploy
 bash "grunt #{node[:app][:grunt_target]}" do
   cwd app_directory
+  user node[:app][:owner]
+  group node[:app][:group]
   code <<-EOC
   grunt #{node[:app][:grunt_target]} --force
   EOC
