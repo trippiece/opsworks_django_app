@@ -65,7 +65,7 @@ bash "manage.py" do
   cwd "#{app_directory}/#{node[:app][:name]}"
   user node[:app][:owner]
   group node[:app][:group]
-  code "#{node[:virtualenv][:path]}/bin/python manage.py collectstatic --noinput --settings=#{node[:app][:django_settings]} && " +
+  code "#{node[:virtualenv][:path]}/bin/python manage.py multicollectstatic --noinput --settings=#{node[:app][:django_settings]} && " +
        "#{node[:virtualenv][:path]}/bin/python manage.py migratesyncdb --settings=#{node[:app][:django_settings]} && " +
        "#{node[:virtualenv][:path]}/bin/python manage.py migrate --settings=#{node[:app][:django_settings]} --database=feed_db"
 end
