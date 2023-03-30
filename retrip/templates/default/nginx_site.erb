@@ -8,13 +8,6 @@ map $http_referer $bad_referer {
 <%- end %>
 
 server {
-    if ($http_user_agent ~* (admantx|comscore|dotbot|GoogleDocs|SemrushBot|AhrefsBot|Linguee|proximic|BLEXBot|GrapeshotCrawler|Mappy|MJ12bot|MegaIndex|bidswitchbot|SMTBot|ltx71|integralads|jet-bot|trendictionbot|PetalBot|Cincraw|Cocolyzebot|CriteoBot)) {
-        return 403;
-    }
-    if ($http_user_agent = "bot") {
-        return 403;
-    }
-
     listen   80;
 <% if node[:app][:default_server_name].empty? %>
     server_name  .<%= node[:app][:host] %>;
@@ -24,17 +17,12 @@ server {
     access_log  <%= node[:nginx][:log_dir] %>/<%= node[:app][:host] %>.access.log;
 
     proxy_set_header Host $host;
-    proxy_cookie_path / "/; secure; SameSite=none";
     real_ip_header X-Forwarded-For;
     set_real_ip_from 10.0.0.0/8;
 
 <% node[:nginx][:custom_block_ips].each do |ip| %>
     deny <%= ip %>;
 <% end %>
-
-    location ~* \.(eot|ttf|woff|woff2)$ {
-        add_header Access-Control-Allow-Origin *;
-    }
 
     location /static/ {
         alias <%= "#{node[:app][:directory]}/#{node[:app][:host]}/#{node[:app][:name]}/static/" %>;
@@ -51,25 +39,13 @@ server {
         proxy_pass http://127.0.0.1:8000;
     }
 
-<% if node[:nginx][:basic_auth_entries].length > 0 %>
-    location /external-link/ {
-        proxy_pass http://127.0.0.1:8000;
-    }
-
-    location /cookie-sync/ {
-        proxy_pass http://127.0.0.1:8000;
-    }
-
     location / {
+<% if node[:nginx][:basic_auth_entries].length > 0 %>
         auth_basic "<%= node[:nginx][:basic_auth_realm] %>";
         auth_basic_user_file <%= node[:nginx][:basic_auth_file] %>;
-        proxy_pass http://127.0.0.1:8000;
-    }
-<% else %>
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-    }
 <% end %>
+        proxy_pass http://127.0.0.1:8000;
+    }
 
     # Block all svn access
     if ($request_uri ~* ^.*\.svn.*$) {

@@ -1,27 +1,25 @@
-# install packages(gdal is only for installing its dependencies)
-%w{gdal proj-devel json-c postgresql95-devel}.each do |pkg|
+# these commands are temporal solution until the package is included in the main repository.
+# See: https://forums.aws.amazon.com/thread.jspa?threadID=174328
+
+# install packages required by PostGIS.
+%w{gdal proj-devel json-c}.each do |pkg|
   package pkg do
     action :upgrade
   end
 end
 
-# install gdal 2.2.0 using conan
-gdal_version = "2.2.0"
-
-bash 'uninstall gdal and re-install its newer version with conan' do
+bash 'add a repository and install postgresql 9.5' do
   code <<-EOC
-  sudo rpm -e --nodeps gdal
-  export PATH=$PATH:/usr/local/bin
-  sudo yum install gcc72 gcc72-c++ -y
-  sudo wget http://download.osgeo.org/gdal/2.2.0/gdal-2.2.0.tar.gz
-  sudo tar xvzf gdal-2.2.0.tar.gz
-  cd gdal-2.2.0
-  sudo ./configure
-  sudo make
-  sudo make install
-  sudo cp /usr/local/lib/libgdal.so.20* /usr/lib64/
+  rpm -ivh https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-6-x86_64/pgdg-ami201503-95-9.5-3.noarch.rpm
+  yum-config-manager --disable pgdg95
+  yum erase -y postgresql92 postgresql92-devel postgresql92-libs postgresql93 postgresql93-devel postgresql93-libs
+  yum --disablerepo="*" --enablerepo="pgdg95" --releasever="6" install -y postgresql95-devel postgis2_95
   EOC
-  user node[:app][:owner]
-  group node[:app][:group]
-  environment 'HOME' => "/home/#{node[:app][:owner]}"
 end
+
+# set permanent global PATH variable for postgresql.
+cookbook_file "/etc/profile.d/pgsql.sh" do
+  source "pgsql.sh"
+end
+# set it temporarily.
+ENV['PATH'] += ":/usr/pgsql-9.5/bin"

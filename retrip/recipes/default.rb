@@ -1,32 +1,16 @@
 include_recipe 'common::virtualenv'
 
 # install required packages.
-%w{npm libjpeg-devel pandoc libcurl-devel}.each do |pkg|
+%w{libmemcached libmemcached-devel npm libjpeg-devel pandoc}.each do |pkg|
   package pkg do
     action :upgrade
-  end
-end
-
-# install newer nodejs
-# loosen ssl validation before the installation.
-bash 'install n and nodejs manually' do
-  code <<-EOC
-  npm config set strict-ssl false
-  npm install -g n
-  n 7.0.0
-  EOC
-end
-# remove packages no longer needed.
-%w{npm nodejs}.each do |pkg|
-  package pkg do
-    action :remove
   end
 end
 
 # install grunt-cli
 bash 'npm install -g grunt-cli' do
   code <<-EOC
-  npm install -g grunt-cli@1.3.2
+  npm install -g grunt-cli
   EOC
 end
 
@@ -74,13 +58,6 @@ s3_file "#{app_directory}/#{node[:apns][:key_path]}" do
   group node[:app][:group]
   mode 0644
   not_if { ::File.exists?("#{app_directory}/#{node[:apns][:key_path]}") }
-end
-
-# yum install
-bash 'yum install libGL' do
-  code <<-EOC
-  sudo yum install -y mesa-libGL.x86_64 mesa-libGL-devel.x86_64
-  EOC
 end
 
 # downloadcertificate

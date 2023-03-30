@@ -31,14 +31,8 @@ bash "pip install -r requirements.txt" do
   group node[:app][:group]
   code <<-EOC
   export HOME=~#{node[:app][:owner]}
-  export PYCURL_SSL_LIBRARY=`curl-config --ssl-backends 2>&1 | awk '{if ($0 == "OpenSSL") print "openssl"; else print "nss";exit;}'`
-  #{node[:virtualenv][:path]}/bin/pip install pip==20.3.4
-  #{node[:virtualenv][:path]}/bin/pip uninstall linaro-django-pagination -y
-  #{node[:virtualenv][:path]}/bin/pip uninstall bcrypt -y
-  #{node[:virtualenv][:path]}/bin/pip uninstall py-bcrypt -y
-  #{node[:virtualenv][:path]}/bin/pip install pycurl --global-option="--with-$PYCURL_SSL_LIBRARY"
+  export PATH=$PATH:/usr/pgsql-9.5/bin
   #{node[:virtualenv][:path]}/bin/pip install -r requirements.txt
-  #{node[:virtualenv][:path]}/bin/pip uninstall psycopg2
   EOC
 end
 
@@ -53,10 +47,8 @@ end
 # grunt deploy
 bash "grunt #{node[:app][:grunt_target]}" do
   cwd app_directory
-  user node[:app][:owner]
-  group node[:app][:group]
   code <<-EOC
-  grunt #{node[:app][:grunt_target]} --force
+  grunt #{node[:app][:grunt_target]}
   EOC
 end
 
@@ -65,9 +57,8 @@ bash "manage.py" do
   cwd "#{app_directory}/#{node[:app][:name]}"
   user node[:app][:owner]
   group node[:app][:group]
-  code "#{node[:virtualenv][:path]}/bin/python manage.py multicollectstatic --noinput --settings=#{node[:app][:django_settings]} && " +
-       "#{node[:virtualenv][:path]}/bin/python manage.py migratesyncdb --settings=#{node[:app][:django_settings]} && " +
-       "#{node[:virtualenv][:path]}/bin/python manage.py migrate --settings=#{node[:app][:django_settings]} --database=feed_db"
+  code "#{node[:virtualenv][:path]}/bin/python manage.py collectstatic --noinput --settings=#{node[:app][:django_settings]} && " +
+       "#{node[:virtualenv][:path]}/bin/python manage.py migrate --settings=#{node[:app][:django_settings]}"
 end
 
 # start or reload gunicorn depending on the current status.
@@ -75,7 +66,7 @@ if `supervisorctl status gunicorn-#{node[:app][:name]} | awk '{print $2}'` =~ /^
   # reload it.
   bash "reload gunicorn" do
     code <<-EOC
-    /usr/local/bin/supervisorctl status gunicorn-#{node[:app][:name]} | awk '{gsub(/,$/, "", $4); print $4}' | xargs kill -HUP
+    supervisorctl status gunicorn-#{node[:app][:name]} | awk '{gsub(/,$/, "", $4); print $4}' | xargs kill -HUP
     EOC
   end
 else
@@ -90,7 +81,7 @@ if `supervisorctl status celeryd-#{node[:app][:name]} | awk '{print $2}'` =~ /^R
   # reload it.
   bash "reload celeryd" do
     code <<-EOC
-    /usr/local/bin/supervisorctl status celeryd-#{node[:app][:name]} | awk '{gsub(/,$/, "", $4); print $4}' | xargs kill -HUP
+    supervisorctl status celeryd-#{node[:app][:name]} | awk '{gsub(/,$/, "", $4); print $4}' | xargs kill -HUP
     EOC
   end
 else

@@ -18,10 +18,6 @@ node[:nginx][:basic_auth_entries].each_with_index do |entry, index|
   end
 end
 
-directory node[:nginx][:basic_auth_file] do
-  mode 0604
-end
-
 # install site-config
 nginx_web_app node[:app][:host] do
   cookbook node[:nginx][:cookbook]

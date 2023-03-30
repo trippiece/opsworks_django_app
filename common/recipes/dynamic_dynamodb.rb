@@ -4,7 +4,7 @@ bash "pip install dynamic-dynamodb" do
   group node[:app][:group]
   code <<-EOC
   export HOME=~#{node[:app][:owner]}
-  #{node[:virtualenv][:parent]}/python2/bin/pip install six dynamic-dynamodb==1.20.5
+  #{node[:virtualenv][:path]}/bin/pip install dynamic-dynamodb==1.20.5
   EOC
 end
 
@@ -19,7 +19,7 @@ end
 
 # supervisor config for dynamic-dynamodb
 supervisor_service "dynamic-dynamodb" do
-  command "#{::File.join(node[:virtualenv][:parent], 'python2', 'bin', 'dynamic-dynamodb')} -c #{config_path}"
+  command "#{::File.join(node[:virtualenv][:path], 'bin', 'dynamic-dynamodb')} -c #{config_path}"
   autostart true
   autorestart true
   startsecs 10
